@@ -20,13 +20,13 @@ class Target extends GameEntity {
     this.currentTime += delta;
 
     if (this.currentTime >= this.endTime) {
-      this.uiElement.classList.add("hidden");
+      // this.uiElement.classList.add("hidden");
       this.endTime = Infinity;
     }
   }
 
   handleMessage() {
-    this.uiElement.classList.remove("hidden");
+    // this.uiElement.classList.remove("hidden");
 
     this.endTime = this.currentTime + this.duration;
 

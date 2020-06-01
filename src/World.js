@@ -11,6 +11,7 @@ import { Player } from "./Player";
 import { Target } from "./Target";
 import { FirstPersonControls } from "./FirstPersonControls";
 import { Renderer } from "expo-three";
+import { Dimensions } from "react-native";
 
 const target = new YUKA.Vector3();
 const intersection = {
@@ -39,8 +40,6 @@ class World {
     this.assetManager = new AssetManager();
 
     this._animate = animate.bind(this);
-    this._onIntroClick = onIntroClick.bind(this);
-    this._onWindowResize = onWindowResize.bind(this);
 
     this.ui = {
       intro: document.getElementById("intro"),
@@ -215,9 +214,29 @@ class World {
 
     // listeners
 
-    window.addEventListener("resize", this._onWindowResize, false);
+    Dimensions.addEventListener("change", this.onWindowResize);
+
+    // window.addEventListener("resize", this._onWindowResize, false);
     // this.ui.intro.addEventListener("click", this._onIntroClick, false);
   }
+
+  onIntroClick = () => {
+    this.controls.connect();
+
+    const context = THREE.AudioContext.getContext();
+
+    if (context.state === "suspended") context.resume();
+  };
+
+  onWindowResize = ({ window }) => {
+    this.camera.aspect = window.width / window.height;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(
+      window.width * window.scale,
+      window.height * window.scale
+    );
+  };
 
   _initGround() {
     const groundMesh = this.assetManager.models.get("ground");
@@ -314,21 +333,6 @@ function sync(entity, renderComponent) {
 
 function syncCamera(entity, renderComponent) {
   renderComponent.matrixWorld.copy(entity.worldMatrix);
-}
-
-function onIntroClick() {
-  this.controls.connect();
-
-  const context = THREE.AudioContext.getContext();
-
-  if (context.state === "suspended") context.resume();
-}
-
-function onWindowResize() {
-  this.camera.aspect = window.innerWidth / window.innerHeight;
-  this.camera.updateProjectionMatrix();
-
-  this.renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 function onTransitionEnd(event) {
