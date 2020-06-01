@@ -152,7 +152,7 @@ function Intro({ onPress }) {
         StyleSheet.absoluteFill,
         {
           backgroundColor: "rgba(0,0,0,0.6)",
-          justifyContent: "center",
+          justifyContent: "space-around",
           alignItems: "center",
         },
       ]}
@@ -160,6 +160,18 @@ function Intro({ onPress }) {
       <Text style={{ fontSize: 24, color: "white" }}>
         Welcome to Yuka + Expo
       </Text>
+      <Text style={{ fontSize: 18, color: "white" }}>
+        This demo implements some basic concepts of First-Person shooters e.g.
+        simulating bullets and collision detection.
+      </Text>
+      <Animatable.Text
+        style={{ fontSize: 24, color: "white" }}
+        animation="pulse"
+        easing="ease-out"
+        iterationCount="infinite"
+      >
+        Touch to play
+      </Animatable.Text>
     </TouchableOpacity>
   );
 }
