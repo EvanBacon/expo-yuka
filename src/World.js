@@ -12,7 +12,7 @@ import { Target } from "./Target";
 import { FirstPersonControls } from "./FirstPersonControls";
 import { Renderer } from "expo-three";
 import { Dimensions } from "react-native";
-
+import { interfaceEmitter } from "./Emitter";
 const target = new YUKA.Vector3();
 const intersection = {
   point: new YUKA.Vector3(),
@@ -42,8 +42,6 @@ class World {
     this._animate = animate.bind(this);
 
     this.ui = {
-      intro: document.getElementById("intro"),
-      crosshairs: document.getElementById("crosshairs"),
       loadingScreen: document.getElementById("loading-screen"),
     };
   }
@@ -215,9 +213,6 @@ class World {
     // listeners
 
     Dimensions.addEventListener("change", this.onWindowResize);
-
-    // window.addEventListener("resize", this._onWindowResize, false);
-    // this.ui.intro.addEventListener("click", this._onIntroClick, false);
   }
 
   onIntroClick = () => {
@@ -226,6 +221,8 @@ class World {
     const context = THREE.AudioContext.getContext();
 
     if (context.state === "suspended") context.resume();
+
+    interfaceEmitter.emit("intro.hidden", true);
   };
 
   onWindowResize = ({ window }) => {
@@ -292,17 +289,14 @@ class World {
     this.controls = new FirstPersonControls(player);
     this.controls.lookSpeed = 2;
 
-    const intro = this.ui.intro;
-    const crosshairs = this.ui.crosshairs;
-
     this.controls.addEventListener("lock", () => {
-      // intro.classList.add("hidden");
-      // crosshairs.classList.remove("hidden");
+      interfaceEmitter.emit("intro.hidden", true);
+      interfaceEmitter.emit("reticle.hidden", false);
     });
 
     this.controls.addEventListener("unlock", () => {
-      // intro.classList.remove("hidden");
-      // crosshairs.classList.add("hidden");
+      interfaceEmitter.emit("intro.hidden", false);
+      interfaceEmitter.emit("reticle.hidden", true);
     });
   }
 
@@ -321,9 +315,7 @@ class World {
   }
 
   _initUI() {
-    // const loadingScreen = this.ui.loadingScreen;
-    // loadingScreen.classList.add("fade-out");
-    // loadingScreen.addEventListener("transitionend", onTransitionEnd);
+    interfaceEmitter.emit("loading.hidden", true);
   }
 }
 

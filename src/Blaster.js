@@ -4,7 +4,7 @@
 
 import { GameEntity, Ray, Vector3 } from "yuka";
 import world from "./World";
-
+import { interfaceEmitter } from "./Emitter";
 const intersectionPoint = new Vector3();
 const target = new Vector3();
 
@@ -33,11 +33,6 @@ class Blaster extends GameEntity {
     this.endTimeMuzzleFire = Infinity;
 
     this.muzzleSprite = world.assetManager.models.get("muzzle");
-
-    this.ui = {
-      roundsLeft: document.getElementById("roundsLeft"),
-      ammo: document.getElementById("ammo"),
-    };
 
     this.updateUI();
   }
@@ -184,8 +179,10 @@ class Blaster extends GameEntity {
   }
 
   updateUI() {
-    // this.ui.roundsLeft.textContent = this.roundsLeft;
-    // this.ui.ammo.textContent = this.ammo;
+    interfaceEmitter.emit("ammo", {
+      current: this.roundsLeft,
+      total: this.ammo,
+    });
   }
 }
 

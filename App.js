@@ -4,23 +4,42 @@ import * as React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import World from "./src/World";
+import { useGlobalEvent } from "./src/Emitter";
 
 export default function App() {
-  const [isIntroVisible, setIntroVisible] = React.useState(true);
+  const isLoadingHidden = useGlobalEvent("loading.hidden");
+  const isIntroHidden = useGlobalEvent("intro.hidden");
+  const isReticleHidden = useGlobalEvent("reticle.hidden");
+  const isHitHidden = useGlobalEvent("hit.hidden");
 
   return (
     <View style={{ flex: 1 }}>
       <GLApp />
-      {isIntroVisible && (
-        <Intro
-          onPress={() => {
-            World.onIntroClick();
-            setIntroVisible(false);
-          }}
-        />
-      )}
       <Hint />
+      <Ammo />
+      {!isHitHidden && <WasHit />}
+      {!isReticleHidden && <CrossHairs />}
+      {!isIntroHidden && <Intro onPress={() => World.onIntroClick()} />}
+      {!isLoadingHidden && <LoadingScreen />}
     </View>
+  );
+}
+
+function WasHit() {
+  return (
+    <Text style={{ position: "absolute", top: 4, right: 4, opacity: 0.8 }}>
+      HIT!
+    </Text>
+  );
+}
+
+function Ammo() {
+  const value = useGlobalEvent("ammo");
+  const { current, total } = value || {};
+  return (
+    <Text style={{ position: "absolute", bottom: 4, right: 4, opacity: 0.8 }}>
+      Ammo: {current}/{total}
+    </Text>
   );
 }
 
@@ -54,6 +73,23 @@ function GLApp() {
   };
 
   return <GLView style={{ flex: 1 }} onContextCreate={onContextCreate} />;
+}
+
+function LoadingScreen() {
+  return (
+    <View
+      style={[
+        StyleSheet.absoluteFill,
+        {
+          backgroundColor: "#fff",
+          justifyContent: "center",
+          alignItems: "center",
+        },
+      ]}
+    >
+      <Text>Loading...</Text>
+    </View>
+  );
 }
 
 function Intro({ onPress }) {

@@ -3,6 +3,7 @@
  */
 
 import { GameEntity } from "yuka";
+import { interfaceEmitter } from "./Emitter";
 
 class Target extends GameEntity {
   constructor(geometry) {
@@ -20,14 +21,13 @@ class Target extends GameEntity {
     this.currentTime += delta;
 
     if (this.currentTime >= this.endTime) {
-      // this.uiElement.classList.add("hidden");
+      interfaceEmitter.emit("hit.hidden", true);
       this.endTime = Infinity;
     }
   }
 
   handleMessage() {
-    // this.uiElement.classList.remove("hidden");
-
+    interfaceEmitter.emit("hit.hidden", false);
     this.endTime = this.currentTime + this.duration;
 
     return true;
