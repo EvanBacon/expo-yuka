@@ -1,4 +1,6 @@
-# My Universal React Project
+# Expo Yuka Example
+
+Based on the [Yuka example](https://github.com/Mugen87/yuka/tree/master/examples/entity/firstperson).
 
 <p>
   <!-- iOS -->
